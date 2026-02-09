@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <title>Matter.js Body Editor</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="98.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="shortcut icon" href="asset/icon.png" />
+</head>
+<body>
+    <div class="app">
+        <aside class="window sidebar" style="height: 1300px;">
+            <div class="title-bar">
+                <div class="title-bar-text">Tools</div>
+            </div>
+            <div class="window-body">
+                <fieldset>
+                    <legend>Shapes</legend>
+                    <div class="tool-stack">
+                        <button class="tool-button" data-tool="rectangle">Rectangle</button>
+                        <button class="tool-button" data-tool="circle">Circle</button>
+                        <button class="tool-button" data-tool="polygon">Polygon</button>
+                        <button class="tool-button" data-tool="vertices">Vertices</button>
+                        <button class="tool-button" data-tool="paste" id="paste-tool">Paste</button>
+                    </div>
+                    <div class="node-tools">
+                        <div class="node-tools-title">Node Tools</div>
+                        <div class="tool-stack">
+                            <button id="new-vertices-shape">New Vertices Shape</button>
+                            <button id="edit-vertices-shape">Edit Existing Vertices</button>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Assets</legend>
+                    <div class="tool-stack">
+                        <button id="import-image">Import Image</button>
+                        <input id="image-input" type="file" accept="image/*" hidden />
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Canvas</legend>
+                    <div class="tool-stack">
+                        <div class="param-row">
+                            <label for="canvas-width">Width</label>
+                            <input id="canvas-width" type="number" min="1" max="2000" />
+                        </div>
+                        <div class="param-row">
+                            <label for="canvas-height">Height</label>
+                            <input id="canvas-height" type="number" min="1" max="2000" />
+                        </div>
+                        <button id="apply-canvas-size">Apply Size</button>
+                        <div class="hint">Only available with empty scene or only background.</div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Actions</legend>
+                    <div class="tool-stack">
+                        <button id="test-body-static" class="default">Test Body (Static)</button>
+                        <div class="field-row">
+                            <input id="auto-static" type="checkbox" />
+                            <label for="auto-static">Auto Refresh Static</label>
+                        </div>
+                        <button id="test-body-dynamic">Test Body (Dynamic)</button>
+                        <button id="clear-body">Clear Body</button>
+                        <button id="toggle-matter">Hide Matter Preview</button>
+                        <button id="export-body">Export Body</button>
+                        <button id="reset-project">Reset Project</button>
+                        <button id="open-manual">Manual</button>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Params</legend>
+                    <div class="params-block">
+                        <div class="params-title">Tool Defaults</div>
+                        <div id="tool-params"></div>
+                    </div>
+                    <div class="params-block">
+                        <div class="params-title">Selected Shape</div>
+                        <div id="selection-params"></div>
+                    </div>
+                    <div class="params-block">
+                        <div class="params-title">Export Params</div>
+                        <textarea id="export-output" rows="6" spellcheck="false"></textarea>
+                        <textarea id="export-code-output" rows="8" spellcheck="false"></textarea>
+                    </div>
+                </fieldset>
+                <div class="hint">
+                    Drag to move. Rotate with the handle. Scale with the handle (hold Shift for free scaling). Delete removes.
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <section class="window preview-window">
+                <div class="title-bar">
+                    <div class="title-bar-text">Preview</div>
+                </div>
+                <div class="window-body preview-body" style="display: flex; gap: 10px;">
+                    <fieldset class="//preview-fieldset" id="pixi-fieldset">
+                        <legend>Pixi Preview</legend>
+                        <div id="pixi-container" class="canvas-panel"></div>
+                    </fieldset>
+                    <fieldset class="//preview-fieldset" id="matter-fieldset">
+                        <legend>Matter Preview</legend>
+                        <div id="matter-container" class="canvas-panel"></div>
+                    </fieldset>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <dialog id="manual-dialog">
+        <div class="window">
+            <div class="title-bar">
+                <div class="title-bar-text">Manual</div>
+            </div>
+            <div class="window-body manual-body">
+                <h3>Overview</h3>
+                <p>This editor lets you build compound bodies from basic shapes or custom vertices, preview them with Matter.js, and export JSON or code.</p>
+
+                <h3>Canvas</h3>
+                <p>Set Width/Height and click Apply Size. You can change size only when the scene is empty or only a background is loaded.</p>
+                <p>Reset Project clears everything and allows you to resize again.</p>
+
+                <h3>Shapes</h3>
+                <p>Select a tool (Rectangle, Circle, Polygon, Vertices) and click inside the Pixi preview to add a shape.</p>
+                <p>Paste is enabled after you copy a selection. Paste places the copy at your click position.</p>
+
+                <h3>Transform Controls</h3>
+                <p>Drag to move. Use the rotation handle to rotate (disabled for circles).</p>
+                <p>Use the scale handle to resize. Hold Shift for free scaling (non-uniform).</p>
+                <p>Arrow keys nudge the selected shape (Shift = larger step). Delete removes.</p>
+
+                <h3>Vertices Workflow</h3>
+                <p>Vertices tool adds points. Hold Ctrl and drag a point to move it.</p>
+                <p>Use Node Tools: New Vertices Shape creates a new vertices object; Edit Existing Vertices edits the focused one.</p>
+
+                <h3>Params Panel</h3>
+                <p>Tool Defaults affect the next shape you add.</p>
+                <p>Selected Shape lets you edit position, scale, angle, and shape-specific parameters.</p>
+                <p>Chamfer: Only rectangles preview chamfer in Pixi (other shapes show in Matter).</p>
+                <p>Advanced Vertex Chamfer lets you set per-vertex radius. Apply buttons commit changes.</p>
+
+                <h3>Testing (Matter)</h3>
+                <p>Static Test creates a non-moving compound body. Dynamic Test uses gravity.</p>
+                <p>Dynamic and Auto Refresh are mutually exclusive. Clear Body removes test bodies only.</p>
+                <p>Auto Refresh Static re-creates the static body periodically.</p>
+
+                <h3>Export</h3>
+                <p>Export creates JSON data and ready-to-paste Matter.js code.</p>
+                <div class="manual-actions">
+                    <button id="close-manual" class="default">Close</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <script src="vendor/pixi.min.js"></script>
+    <script src="vendor/matter.min.js"></script>
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>
