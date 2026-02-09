@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <title>MossBack360's demo tool</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body>
+    <h1>MossBack360's demo tool</h1>
+    <fieldset>
+        <div style="width: 800;overflow: auto;">
+            <fieldset>
+            <legend>MatterJS body editor</legend>
+            <a href="./MBE/index.html">Open MatterJS body editor</a>
+            <hr>
+            <img src="./screenshot/MBE1.png" alt="Preview of MatterJS body editor" width="700">
+            <div class="text">
+                <div class="window-body manual-body">
+                    <h3>Overview</h3>
+                    <p>This editor lets you build compound bodies from basic shapes or custom vertices, preview them
+                        with Matter.js, and export JSON or code.</p>
+
+                    <h3>Canvas</h3>
+                    <p>Set Width/Height and click Apply Size. You can change size only when the scene is empty or only a
+                        background is loaded.</p>
+                    <p>Reset Project clears everything and allows you to resize again.</p>
+
+                    <h3>Shapes</h3>
+                    <p>Select a tool (Rectangle, Circle, Polygon, Vertices) and click inside the Pixi preview to add a
+                        shape.</p>
+                    <p>Paste is enabled after you copy a selection. Paste places the copy at your click position.</p>
+
+                    <h3>Transform Controls</h3>
+                    <p>Drag to move. Use the rotation handle to rotate (disabled for circles).</p>
+                    <p>Use the scale handle to resize. Hold Shift for free scaling (non-uniform).</p>
+                    <p>Arrow keys nudge the selected shape (Shift = larger step). Delete removes.</p>
+
+                    <h3>Vertices Workflow</h3>
+                    <p>Vertices tool adds points. Hold Ctrl and drag a point to move it.</p>
+                    <p>Use Node Tools: New Vertices Shape creates a new vertices object; Edit Existing Vertices edits
+                        the focused one.</p>
+
+                    <h3>Params Panel</h3>
+                    <p>Tool Defaults affect the next shape you add.</p>
+                    <p>Selected Shape lets you edit position, scale, angle, and shape-specific parameters.</p>
+                    <p>Chamfer: Only rectangles preview chamfer in Pixi (other shapes show in Matter).</p>
+                    <p>Advanced Vertex Chamfer lets you set per-vertex radius. Apply buttons commit changes.</p>
+
+                    <h3>Testing (Matter)</h3>
+                    <p>Static Test creates a non-moving compound body. Dynamic Test uses gravity.</p>
+                    <p>Dynamic and Auto Refresh are mutually exclusive. Clear Body removes test bodies only.</p>
+                    <p>Auto Refresh Static re-creates the static body periodically.</p>
+
+                    <h3>Export</h3>
+                    <p>Export creates JSON data and ready-to-paste Matter.js code.</p>
+                </div>
+            </div>
+            </fieldset>
+    </fieldset>
+
+</body>
+
+</html>
